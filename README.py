@@ -56,8 +56,8 @@ class balls:
         vy = 1
         while vx != 0 and vy != 0:
             
-            self.x += 1
-            self.y += 1
+            self.x += vx
+            self.y += vy
             vx -= 0.01
             vy -= 0.01
 f = field(canv, 400, 400, 'green', 'black', [])
