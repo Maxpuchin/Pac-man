@@ -1,0 +1,109 @@
+from tkinter import *
+import time
+import math
+from math import *
+__author__ = 'max'
+
+
+root = Tk()
+canv = Canvas(root, width=470, height=460, bg='white')
+canv.pack()
+
+class field:
+    def __init__(self, canv, h, w, col, colour, balls_lst, grid=15, lst=[]):
+        self.canv = canv
+        self.h = h
+        self.w = w
+        self.col = col
+        self.grid = grid
+        self.holecol = colour
+        self.holes = lst
+        self.balls_lst = balls_lst
+    def draw_field(self):
+        
+        f1 = self.canv.create_rectangle(15, 15, 45 + self.h,45 + self.w, fill='blue')
+        f = self.canv.create_rectangle(30, 30, 30 + self.h, 30 + self.w, fill=self.col)
+    def create_holes(self):
+        a = self.canv.create_oval(30, 30, 30 + self.grid * 2, 30 + self.grid * 2, fill=self.holecol)
+        b = self.canv.create_oval(210, 30, 210 + self.grid * 2, 30 + self.grid * 2, fill=self.holecol)
+        c = self.canv.create_oval(400, 30, 400 + self.grid * 2, 30 + self.grid * 2, fill=self.holecol)
+        d = self.canv.create_oval(210, 400, 210 + self.grid * 2, 400 + self.grid * 2, fill=self.holecol)
+        e = self.canv.create_oval(30, 400, 30 + self.grid * 2, 400 + self.grid * 2, fill=self.holecol)
+        f = self.canv.create_oval(400, 400, 400 + self.grid * 2, 400 + self.grid * 2, fill=self.holecol)
+        self.holes.append(a)
+        self.holes.append(b)
+        self.holes.append(c)
+        self.holes.append(d)
+        self.holes.append(e)
+        self.holes.append(f)
+        return self.holes
+    
+    def balls_move(self):
+        for i in self.balls_lst:
+            i[0] += i[2]
+            i[1] += i[3]
+class balls:
+    def __init__(self, canv, x, y, t, grid=15):
+        self.grid = grid
+        self.canv = canv
+        self.x = x
+        self.y = y
+        self.t = t
+        
+    def create_balls(self):
+        self.canv.create_oval(self.x, self.y, self.x + self.grid * 2, self.y + self.grid * 2, fill='white', tag='b')
+    def move(self, alp, vx, vy):
+        
+        canv.delete('b')
+        
+
+            
+        self.x += vx * math.cos(alp)
+        self.y += vy * math.sin(alp)
+        vx *= 0.99
+        vy *= 0.99
+        return self.x, self.y
+class kiy:
+    def __init__(self, x, y, canv, x1, x2):
+        self.canv = canv
+        self.x = x
+        self.y = y
+        self.x1 = x1
+        self.y1 = x2
+    
+    def draw_kiy(self):
+        global alp
+        self.canv.delete('k')
+        self.canv.create_line(self.x, self.y, x1, y1, tag='k')
+        alp = math.acos((x1-x)/((x1-x)**2 + (y1-y)**2)**0.5)*57
+        
+    def pnut(self, event):
+        global alp, vx, vy
+        vx = math.sin(alp)
+        vy = math.cos(alp)
+   #     print(math.cos(alp))
+vx, vy = 0,0        
+alp = 0        
+f = field(canv, 400, 400, 'green', 'black', [])
+f.draw_field()
+f.create_holes()
+b = balls(canv, 60, 60, [])
+x1, y1 = 0, 0
+def callback(event):
+    global x1, y1
+    x1, y1 = event.x, event.y
+canv.bind("<Motion>", callback)
+
+while 1:
+    b.move(alp, vx, vy)
+    x, y = b.move(alp, vx, vy)
+ #   print (vx, vy)
+    kiy1 = kiy(x+15, y+15, canv, x1, y1)
+    canv.bind('<Button-1>', kiy1.pnut)
+  #  print(vx, vy)
+    if vx < 0.1 and vy < 0.1:
+        kiy1.draw_kiy()
+    b.create_balls()
+    canv.update()
+    time.sleep(0.01)
+root.mainloop()
